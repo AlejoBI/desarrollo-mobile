@@ -26,53 +26,66 @@ const Contacts = ({
   };
 
   return (
-    <div>
-      <h1>Challenge 01 - Contact Manager</h1>
+    <main className="app-container">
+      <header className="app-header">
+        <h1>Contact Manager</h1>
+        <p className="sub">Pequeño challenge: añade y elimina contactos</p>
+      </header>
 
-      <div>
-        <h2>Add New Contact</h2>
-        <form onSubmit={handleSubmit}>
-          <div>
+      <section className="panel">
+        <h2 className="section-title">Agregar contacto</h2>
+        <form className="contact-form" onSubmit={handleSubmit}>
+          <div className="input-row">
             <input
+              className="input"
               type="text"
-              placeholder="Name"
+              placeholder="Nombre"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-          </div>
-          <div>
             <input
+              className="input"
               type="tel"
-              placeholder="Phone"
+              placeholder="Teléfono"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
           </div>
-          <button type="submit">Add Contact</button>
+          <div className="form-actions">
+            <button className="btn primary" type="submit">
+              Agregar
+            </button>
+          </div>
         </form>
-      </div>
+      </section>
 
-      <div>
-        <h2>Contacts ({contacts.length})</h2>
+      <section className="panel">
+        <h2 className="section-title">Contactos ({contacts.length})</h2>
         {contacts.length === 0 ? (
-          <p>No contacts yet. Add your first contact above!</p>
+          <p className="muted">Sin contactos — agrega tu primero arriba.</p>
         ) : (
-          <ul>
+          <ul className="contacts-list">
             {contacts.map((contact) => (
-              <li key={contact.id}>
-                <div>
-                  <div>{contact.name}</div>
-                  <div>{contact.phone}</div>
+              <li key={contact.id} className="contact-card">
+                <div className="contact-info">
+                  <div className="contact-name">{contact.name}</div>
+                  <div className="contact-phone">{contact.phone}</div>
                 </div>
-                <button onClick={() => onDeleteContact(contact.id)}>
-                  Delete
-                </button>
+                <div>
+                  <button
+                    className="btn danger small"
+                    onClick={() => onDeleteContact(contact.id)}
+                    aria-label={`Eliminar ${contact.name}`}
+                  >
+                    Eliminar
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
         )}
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 

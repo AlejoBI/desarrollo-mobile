@@ -40,3 +40,111 @@
 .read-the-docs {
   color: #888;
 }
+
+/* App-specific simple design */
+.app-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1.25rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.app-header {
+  text-align: left;
+  color: inherit;
+}
+.app-header h1 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.8rem;
+}
+.app-header .sub {
+  margin: 0;
+  color: #9aa6b2;
+  font-size: 0.95rem;
+}
+
+.panel {
+  background: rgba(255,255,255,0.03);
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: left;
+}
+
+.section-title {
+  margin: 0 0 0.6rem 0;
+  font-size: 1.05rem;
+}
+
+.contact-form .input-row {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.input {
+  flex: 1 1 160px;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(0,0,0,0.15);
+  color: inherit;
+}
+.form-actions { margin-top: 0.6rem; }
+.btn { cursor: pointer; }
+.btn.primary {
+  background: linear-gradient(90deg,#646cff,#535bf2);
+  color: white;
+  border: none;
+  padding: 0.55rem 0.9rem;
+  border-radius: 8px;
+}
+.btn.small { padding: 0.35rem 0.6rem; font-size: 0.9rem; }
+.btn.danger { background: transparent; color: #ff6b6b; border: 1px solid rgba(255,107,107,0.08); }
+
+.contacts-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+.contact-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.65rem;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.08));
+  border: 1px solid rgba(255,255,255,0.03);
+}
+.contact-name { font-weight: 600; }
+.contact-phone { color: #9aa6b2; font-size: 0.95rem; }
+.muted { color: #9aa6b2; }
+
+/* Loader */
+.loader-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+.spinner {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 6px solid rgba(255,255,255,0.06);
+  border-top-color: #646cff;
+  animation: spin 1s linear infinite;
+}
+.loader-text { color: #9aa6b2; }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 560px) {
+  .app-container { padding: 0.75rem; margin: 1rem; }
+  .app-header h1 { font-size: 1.4rem; }
+}
