@@ -1,0 +1,88 @@
+.contacts-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0 0 0.5rem 0;
+  color: var(--ion-color-primary);
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  margin: 0;
+  color: var(--ion-color-medium);
+}
+
+.title-icon {
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+.add-button {
+  margin-top: 1rem;
+}
+
+.contacts-list-content {
+  padding: 0;
+}
+
+.contact-item {
+  --padding-start: 1rem;
+  --inner-padding-end: 0.5rem;
+}
+
+.contact-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--ion-color-dark);
+  margin: 0.25rem 0;
+}
+
+.contact-phone {
+  font-size: 0.95rem;
+  color: var(--ion-color-medium);
+  margin: 0.25rem 0;
+}
+
+.empty-message {
+  text-align: center;
+  padding: 2rem 1rem;
+  display: block;
+}
+
+.empty-message p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Estilos para tema oscuro */
+@media (prefers-color-scheme: dark) {
+  .contact-name {
+    color: var(--ion-color-light);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .contacts-container {
+    padding: 0.5rem;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .page-subtitle {
+    font-size: 0.9rem;
+  }
+}
