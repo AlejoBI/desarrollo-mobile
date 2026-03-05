@@ -4,7 +4,10 @@ import {
   IonPage,
   IonTitle,
   IonToolbar,
+  IonButton,
+  IonButtons,
 } from "@ionic/react";
+import { useHistory } from "react-router-dom";
 import Loader from "../components/Loader";
 import Contacts from "../components/Contacts";
 import useContacts from "../hooks/useContacts";
@@ -18,12 +21,21 @@ import "./Home.css";
  */
 const Home: React.FC = () => {
   const { contacts, loading, addContact, deleteContact } = useContacts();
+  const history = useHistory();
+
+  const handleLogout = () => {
+    localStorage.removeItem("logged");
+    history.push("/login");
+  };
 
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonTitle>Contact Manager</IonTitle>
+          <IonButtons slot="end">
+            <IonButton onClick={handleLogout}>Logout</IonButton>
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
 
