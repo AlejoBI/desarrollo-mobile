@@ -1,0 +1,27 @@
+.buscador {
+  margin: 1.5rem 0;
+}
+
+.buscador input {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: inherit;
+  font-size: 1rem;
+}
+
+.buscador input:focus {
+  outline: none;
+  border-color: #646cff;
+}
+
+@media (prefers-color-scheme: light) {
+  .buscador input {
+    background-color: white;
+    border: 1px solid #ddd;
+    color: #213547;
+  }
+}

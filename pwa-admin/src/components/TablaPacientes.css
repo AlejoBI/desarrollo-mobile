@@ -1,0 +1,101 @@
+.tabla-pacientes table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tabla-pacientes table th {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+}
+
+.tabla-pacientes table td {
+  padding: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tabla-pacientes table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.tabla-pacientes table button {
+  margin-right: 0.5rem;
+  padding: 0.4em 0.8em;
+  font-size: 0.9em;
+}
+
+.tabla-pacientes .mensaje-vacio {
+  text-align: center;
+  padding: 2rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-contenido {
+  background-color: #1a1a1a;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 400px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.modal-contenido button {
+  margin-right: 0.5rem;
+}
+
+@media (prefers-color-scheme: light) {
+  .tabla-pacientes table {
+    background-color: white;
+  }
+
+  .tabla-pacientes table th {
+    background-color: #f5f5f5;
+  }
+
+  .tabla-pacientes table td {
+    border-top: 1px solid #eee;
+  }
+
+  .tabla-pacientes table tbody tr:hover {
+    background-color: #f9f9f9;
+  }
+
+  .modal-contenido {
+    background-color: white;
+  }
+}
+
+@media (max-width: 768px) {
+  .tabla-pacientes table {
+    font-size: 0.9rem;
+  }
+
+  .tabla-pacientes table th,
+  .tabla-pacientes table td {
+    padding: 0.5rem;
+  }
+
+  .tabla-pacientes table button {
+    display: block;
+    margin: 0.2rem 0;
+    width: 100%;
+  }
+}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { login } from "../utils/auth";
 import type { Usuario } from "../types";
+import "./LoginForm.css";
 
 interface Props {
   onLogin: (usuario: Usuario) => void;
@@ -27,28 +28,32 @@ export default function LoginForm({ onLogin }: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Login MediCare+</h2>
+    <form className="login-form" onSubmit={handleSubmit} style={{ margin: "0 auto" }}>
+      <h2>MediCare+ Admin</h2>
 
       <div>
-        <label>Email</label>
+        <label htmlFor="email">Email</label>
         <input
+          id="email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
       </div>
 
       <div>
-        <label>Contraseña</label>
+        <label htmlFor="password">Contraseña</label>
         <input
+          id="password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
       </div>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p style={{ color: "red", margin: "0.5rem 0" }}>{error}</p>}
 
       <button type="submit">Iniciar sesión</button>
     </form>

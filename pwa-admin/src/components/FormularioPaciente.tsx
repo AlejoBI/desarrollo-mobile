@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Paciente } from "../types";
+import "./FormularioPaciente.css";
 
 interface Props {
   pacienteAEditar: Paciente | null;
@@ -83,32 +84,54 @@ export default function FormularioPaciente({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="formulario-paciente" onSubmit={handleSubmit}>
       <h3>{pacienteAEditar ? "Editar Paciente" : "Nuevo Paciente"}</h3>
 
       <div>
-        <label>Nombre</label>
-        <input value={nombre} onChange={(e) => setNombre(e.target.value)} />
+        <label htmlFor="nombre">Nombre</label>
+        <input
+          id="nombre"
+          type="text"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+        />
       </div>
 
       <div>
-        <label>Apellido</label>
-        <input value={apellido} onChange={(e) => setApellido(e.target.value)} />
+        <label htmlFor="apellido">Apellido</label>
+        <input
+          id="apellido"
+          type="text"
+          value={apellido}
+          onChange={(e) => setApellido(e.target.value)}
+        />
       </div>
 
       <div>
-        <label>DNI</label>
-        <input value={dni} onChange={(e) => setDni(e.target.value)} />
+        <label htmlFor="dni">DNI</label>
+        <input
+          id="dni"
+          type="text"
+          value={dni}
+          onChange={(e) => setDni(e.target.value)}
+        />
       </div>
 
       <div>
-        <label>Teléfono</label>
-        <input value={telefono} onChange={(e) => setTelefono(e.target.value)} />
+        <label htmlFor="telefono">Teléfono (Opcional)</label>
+        <input
+          id="telefono"
+          type="text"
+          value={telefono}
+          onChange={(e) => setTelefono(e.target.value)}
+        />
       </div>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p style={{ color: "red", margin: "0.5rem 0" }}>{error}</p>}
 
-      <button type="submit">Guardar</button>
+      <button type="submit">
+        {pacienteAEditar ? "Actualizar" : "Guardar"}
+      </button>
     </form>
   );
 }

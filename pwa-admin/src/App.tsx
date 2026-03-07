@@ -27,10 +27,21 @@ const App = () => {
   };
 
   if (!usuario) {
-    return <LoginForm onLogin={handleLogin} />;
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh",
+        }}
+      >
+        <LoginForm onLogin={handleLogin} />
+      </div>
+    );
   }
 
-  return <Dashboard usuario={usuario} />;
+  return <Dashboard usuario={usuario} onLogout={handleLogout} />;
 };
 
 export default App;

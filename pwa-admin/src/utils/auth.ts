@@ -6,6 +6,7 @@ export const usuariosMock: Usuario[] = [
     password: "1234",
     nombre: "Laura Perez",
     rol: "recepcionista",
+    avatar: "/nina.png",
   },
   {
     email: "medico@medicare.com",

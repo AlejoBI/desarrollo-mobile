@@ -1,3 +1,5 @@
+import "./BuscadorPacientes.css";
+
 interface Props {
   busqueda: string;
   setBusqueda: (valor: string) => void;
@@ -5,10 +7,10 @@ interface Props {
 
 export default function BuscadorPacientes({ busqueda, setBusqueda }: Props) {
   return (
-    <div>
+    <div className="buscador">
       <input
         type="text"
-        placeholder="Buscar paciente..."
+        placeholder="Buscar paciente por nombre o DNI..."
         value={busqueda}
         onChange={(e) => setBusqueda(e.target.value)}
       />
