@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Paciente, Usuario } from "../types";
 import { storageService } from "../services/localSAtorageService";
 import BuscadorPacientes from "../components/BuscadorPacientes";
+import FormularioPaciente from "../components/FormularioPaciente";
 
 interface Props {
   usuario: Usuario;
@@ -55,7 +56,18 @@ export default function Dashboard({ usuario }: Props) {
 
       <BuscadorPacientes busqueda={busqueda} setBusqueda={setBusqueda} />
 
-      {usuario.rol !== "medico" && <p>Formulario de pacientes</p>}
+      {usuario.rol !== "medico" && (
+        <FormularioPaciente
+          pacienteAEditar={pacienteAEditar}
+          onGuardar={(paciente) => {
+            if (pacienteAEditar) {
+              editarPaciente(paciente);
+            } else {
+              agregarPaciente(paciente);
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
