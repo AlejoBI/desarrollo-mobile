@@ -1,17 +1,24 @@
 import { useEffect, useState } from "react";
 import type { Usuario } from "./types";
 import { storageService } from "./services/localSAtorageService";
+import LoginForm from "./components/LoginForm";
 
-function App() {
+import "./App.css";
+
+const App = () => {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
 
   useEffect(() => {
     const user = storageService.obtenerUsuario();
-
     if (user) {
       setUsuario(user);
     }
   }, []);
+
+  const handleLogin = (user: Usuario) => {
+    storageService.guardarUsuario(user);
+    setUsuario(user);
+  };
 
   const handleLogout = () => {
     storageService.limpiarUsuario();
@@ -19,7 +26,7 @@ function App() {
   };
 
   if (!usuario) {
-    return <div>LoginPage</div>;
+    return <LoginForm onLogin={handleLogin} />;
   }
 
   return (
@@ -31,6 +38,6 @@ function App() {
       <button onClick={handleLogout}>Logout</button>
     </div>
   );
-}
+};
 
 export default App;
