@@ -1,52 +1,37 @@
-# Desarrollo-mobile
+# MediCare+ – Parcial 1
 
-Repositorio para el desarrollo de ejercicios de la clase de desarrollo móvil.
+Proyecto del **Parcial 1 – Desarrollo de Plataformas Móviles** que consiste en dos aplicaciones: una **PWA en React** para la administración de pacientes desde escritorio, y una **App móvil en Ionic React** para la gestión de visitas médicas a domicilio.
 
----
+## Tecnologías utilizadas
 
-## Requisitos previos
+- React
+- TypeScript
+- localStorage
+- Progressive Web App (Manifest + Service Worker)
 
-- [Node.js](https://nodejs.org/) instalado
-- [Android Studio](https://developer.android.com/studio) instalado con al menos un AVD configurado
-- Ionic CLI instalado globalmente:
-  ```bash
-  npm install -g @ionic/cli
-  ```
+## Funcionalidades principales
 
----
+- Login con autenticación simulada
+- Persistencia de sesión con localStorage
+- Gestión de pacientes (crear, editar, eliminar)
+- Buscador de pacientes por nombre, apellido o DNI
+- Avatar de usuario con iniciales
+- Control de acceso por rol (médico/recepcionista)
+- Conversión de la aplicación en PWA
 
-## Crear una nueva app Ionic
+## Capturas de pantalla
 
-```bash
-ionic start nombre-de-tu-app blank --type=react
-cd nombre-de-tu-app
-```
+### Login y Configuración PWA
+![Login con Service Worker y Manifest](./pwa-admin/login-workr-manifest.png)
 
----
+### Dashboard Recepcionista
+![Vista de recepcionista](./pwa-admin/dashboard-recepcionista.png)
 
-## Configurar Android (solo la primera vez por proyecto)
+### Perfil de Usuario
+![Perfil de usuario - Recepcionista](./pwa-admin/dashboard-recepcionista-user.png)
 
-```bash
-ionic cap add android
-```
-
----
-
-## Ejecutar la app en Android Studio
-
-### Opción 1: Automática (Recomendada)
-
-Cada vez que hagas cambios, ejecuta este comando desde la carpeta del proyecto:
-
-**En PowerShell (Windows):**
-```powershell
-ionic build; npx cap copy android; npx cap sync android; ionic cap open android
-```
-
-**En Bash/Terminal (Mac/Linux):**
-```bash
-ionic build && npx cap copy android && npx cap sync android && ionic cap open android
-```
+### Dashboard Médico
+![Vista de médico](./pwa-admin/dashboard-medico.png)
 
 Este comando:
 1. Compila la app (`ionic build`)
@@ -81,3 +66,8 @@ ionic cap open android
 ```
 
 ---
+
+## Autor
+
+**Alejandro Bravo**  
+Universidad Autónoma de Occidente
