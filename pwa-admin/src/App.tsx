@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Usuario } from "./types";
 import { storageService } from "./services/localSAtorageService";
 import LoginForm from "./components/LoginForm";
+import Dashboard from "./pages/Dashboard";
 
 import "./App.css";
 
@@ -29,15 +30,7 @@ const App = () => {
     return <LoginForm onLogin={handleLogin} />;
   }
 
-  return (
-    <div>
-      <h1>Dashboard</h1>
-
-      <p>Bienvenido {usuario.nombre}</p>
-
-      <button onClick={handleLogout}>Logout</button>
-    </div>
-  );
+  return <Dashboard usuario={usuario} />;
 };
 
 export default App;
