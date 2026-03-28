@@ -42,10 +42,12 @@ const RegisterPage: React.FC = () => {
     try {
       setIsSubmitting(true);
       await register(email, password);
-      history.replace("/tasks");
+      history.replace("/dashboard");
     } catch (registerError) {
       const message =
-        registerError instanceof Error ? registerError.message : "Unable to register user.";
+        registerError instanceof Error
+          ? registerError.message
+          : "Unable to register user.";
       setError(message);
     } finally {
       setIsSubmitting(false);
@@ -85,7 +87,9 @@ const RegisterPage: React.FC = () => {
               <IonInput
                 type="password"
                 value={confirmPassword}
-                onIonInput={(event) => setConfirmPassword(event.detail.value ?? "")}
+                onIonInput={(event) =>
+                  setConfirmPassword(event.detail.value ?? "")
+                }
                 placeholder="Repeat your password"
               />
             </IonItem>
@@ -96,7 +100,11 @@ const RegisterPage: React.FC = () => {
               </IonText>
             )}
 
-            <IonButton expand="block" onClick={handleRegister} disabled={isSubmitting}>
+            <IonButton
+              expand="block"
+              onClick={handleRegister}
+              disabled={isSubmitting}
+            >
               Create account
             </IonButton>
             <IonButton expand="block" fill="clear" routerLink="/login">

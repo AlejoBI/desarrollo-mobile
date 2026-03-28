@@ -10,11 +10,15 @@ import {
 import { IonReactRouter } from "@ionic/react-router";
 import ProtectedRoute from "./components/routing/ProtectedRoute";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { ContactsProvider } from "./contexts/ContactsContext";
+import { FruitsProvider } from "./contexts/FruitsContext";
+import { NetworkProvider, useNetwork } from "./contexts/NetworkContext";
 import { TasksProvider } from "./contexts/TasksContext";
+import ContactsPage from "./pages/ContactsPage";
+import DashboardPage from "./pages/DashboardPage";
+import FruitsPage from "./pages/FruitsPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import TaskDetailPage from "./pages/TaskDetailPage";
-import TaskFormPage from "./pages/TaskFormPage";
 import TasksListPage from "./pages/TasksListPage";
 
 /* Core CSS required for Ionic components to work properly */
@@ -69,7 +73,21 @@ const GuestOnly: React.FC<GuestOnlyProps> = ({ children }) => {
   }
 
   if (user) {
-    return <Redirect to="/tasks" />;
+    return <Redirect to="/dashboard" />;
+  }
+
+  return <>{children}</>;
+};
+
+interface OnlineOnlyProps {
+  children: React.ReactNode;
+}
+
+const OnlineOnly: React.FC<OnlineOnlyProps> = ({ children }) => {
+  const { isOnline } = useNetwork();
+
+  if (!isOnline) {
+    return <Redirect to="/dashboard" />;
   }
 
   return <>{children}</>;
@@ -82,56 +100,66 @@ const HomeRedirect: React.FC = () => {
     return <AuthLoading />;
   }
 
-  return <Redirect to={user ? "/tasks" : "/login"} />;
+  return <Redirect to={user ? "/dashboard" : "/login"} />;
 };
 
 const App: React.FC = () => (
   <IonApp>
     <AuthProvider>
-      <TasksProvider>
-        <IonReactRouter>
-          <IonRouterOutlet>
-            <Route
-              exact
-              path="/login"
-              render={() => (
-                <GuestOnly>
-                  <LoginPage />
-                </GuestOnly>
-              )}
-            />
-            <Route
-              exact
-              path="/register"
-              render={() => (
-                <GuestOnly>
-                  <RegisterPage />
-                </GuestOnly>
-              )}
-            />
+      <NetworkProvider>
+        <TasksProvider>
+          <ContactsProvider>
+            <FruitsProvider>
+              <IonReactRouter>
+                <IonRouterOutlet>
+                  <Route
+                    exact
+                    path="/login"
+                    render={() => (
+                      <GuestOnly>
+                        <LoginPage />
+                      </GuestOnly>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/register"
+                    render={() => (
+                      <GuestOnly>
+                        <RegisterPage />
+                      </GuestOnly>
+                    )}
+                  />
 
-            <ProtectedRoute exact path="/tasks/new">
-              <TaskFormPage />
-            </ProtectedRoute>
-            <ProtectedRoute exact path="/tasks/:id/edit">
-              <TaskFormPage />
-            </ProtectedRoute>
-            <ProtectedRoute exact path="/tasks/detail/:id">
-              <TaskDetailPage />
-            </ProtectedRoute>
-            <ProtectedRoute exact path="/tasks">
-              <TasksListPage />
-            </ProtectedRoute>
+                  <ProtectedRoute exact path="/dashboard">
+                    <DashboardPage />
+                  </ProtectedRoute>
+                  <ProtectedRoute exact path="/contacts">
+                    <OnlineOnly>
+                      <ContactsPage />
+                    </OnlineOnly>
+                  </ProtectedRoute>
+                  <ProtectedRoute exact path="/tasks">
+                    <OnlineOnly>
+                      <TasksListPage />
+                    </OnlineOnly>
+                  </ProtectedRoute>
+                  <ProtectedRoute exact path="/fruits">
+                    <FruitsPage />
+                  </ProtectedRoute>
 
-            <Route exact path="/">
-              <HomeRedirect />
-            </Route>
-            <Route>
-              <Redirect to="/" />
-            </Route>
-          </IonRouterOutlet>
-        </IonReactRouter>
-      </TasksProvider>
+                  <Route exact path="/">
+                    <HomeRedirect />
+                  </Route>
+                  <Route>
+                    <Redirect to="/" />
+                  </Route>
+                </IonRouterOutlet>
+              </IonReactRouter>
+            </FruitsProvider>
+          </ContactsProvider>
+        </TasksProvider>
+      </NetworkProvider>
     </AuthProvider>
   </IonApp>
 );

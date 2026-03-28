@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import {
+  IonBackButton,
   IonButton,
+  IonButtons,
   IonCheckbox,
   IonContent,
-  IonFab,
-  IonFabButton,
   IonHeader,
-  IonIcon,
+  IonInput,
   IonItem,
   IonLabel,
   IonList,
@@ -16,13 +16,30 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { add, createOutline, eyeOutline, trashOutline } from "ionicons/icons";
-import { useAuth } from "../contexts/AuthContext";
+import { useNetwork } from "../contexts/NetworkContext";
 import { useTasks } from "../contexts/TasksContext";
 
 const TasksListPage: React.FC = () => {
-  const { logout } = useAuth();
-  const { tasks, loading, error, updateTask, deleteTask } = useTasks();
+  const { tasks, loading, error, addTask, updateTask, deleteTask } = useTasks();
+  const { isOnline } = useNetwork();
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+
+  const handleAdd = async () => {
+    if (!title.trim() || !isOnline) {
+      return;
+    }
+
+    await addTask({
+      title,
+      description,
+      completed: false,
+    });
+
+    setTitle("");
+    setDescription("");
+  };
 
   const handleToggleTask = async (taskId: string, currentValue: boolean) => {
     await updateTask(taskId, { completed: !currentValue });
@@ -32,13 +49,37 @@ const TasksListPage: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
+          <IonButtons slot="start">
+            <IonBackButton defaultHref="/dashboard" />
+          </IonButtons>
           <IonTitle>Tasks</IonTitle>
-          <IonButton slot="end" fill="clear" onClick={() => logout()}>
-            Logout
-          </IonButton>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
+        <IonText color={isOnline ? "success" : "warning"}>
+          <p>
+            {isOnline ? "Online: Tasks enabled" : "Offline: Tasks disabled"}
+          </p>
+        </IonText>
+
+        <IonItem>
+          <IonLabel position="stacked">Title</IonLabel>
+          <IonInput
+            value={title}
+            onIonInput={(e) => setTitle(e.detail.value ?? "")}
+          />
+        </IonItem>
+        <IonItem>
+          <IonLabel position="stacked">Description</IonLabel>
+          <IonInput
+            value={description}
+            onIonInput={(e) => setDescription(e.detail.value ?? "")}
+          />
+        </IonItem>
+        <IonButton expand="block" onClick={handleAdd} disabled={!isOnline}>
+          Add Task
+        </IonButton>
+
         {loading ? (
           <div className="ion-text-center">
             <IonSpinner name="crescent" />
@@ -58,6 +99,7 @@ const TasksListPage: React.FC = () => {
                 <IonCheckbox
                   slot="start"
                   checked={task.completed}
+                  disabled={!isOnline}
                   onIonChange={() => handleToggleTask(task.id, task.completed)}
                 />
                 <IonLabel
@@ -67,29 +109,18 @@ const TasksListPage: React.FC = () => {
                 >
                   {task.title}
                 </IonLabel>
-                <IonButton fill="clear" routerLink={`/tasks/detail/${task.id}`}>
-                  <IonIcon slot="icon-only" icon={eyeOutline} />
-                </IonButton>
-                <IonButton fill="clear" routerLink={`/tasks/${task.id}/edit`}>
-                  <IonIcon slot="icon-only" icon={createOutline} />
-                </IonButton>
                 <IonButton
                   fill="clear"
                   color="danger"
+                  disabled={!isOnline}
                   onClick={() => deleteTask(task.id)}
                 >
-                  <IonIcon slot="icon-only" icon={trashOutline} />
+                  Delete
                 </IonButton>
               </IonItem>
             ))}
           </IonList>
         )}
-
-        <IonFab vertical="bottom" horizontal="end" slot="fixed">
-          <IonFabButton routerLink="/tasks/new">
-            <IonIcon icon={add} />
-          </IonFabButton>
-        </IonFab>
       </IonContent>
     </IonPage>
   );

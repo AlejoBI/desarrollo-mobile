@@ -1,21 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  onSnapshot,
-  orderBy,
-  query,
-  serverTimestamp,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import { db } from "../config/firebase";
+  get,
+  onValue,
+  push,
+  ref,
+  remove,
+  set,
+  update,
+} from "firebase/database";
+import { rtdb } from "../config/firebase";
 import { Task, TaskPayload } from "../types/task";
-
-const TASKS_COLLECTION = "tasks";
 
 export const useFirebaseTasks = (userId?: string) => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -32,40 +26,38 @@ export const useFirebaseTasks = (userId?: string) => {
 
     setLoading(true);
     setError(null);
-    const tasksRef = collection(db, TASKS_COLLECTION);
-    const tasksQuery = query(
-      tasksRef,
-      where("userId", "==", userId),
-      orderBy("createdAt", "desc"),
-    );
 
-    const unsubscribe = onSnapshot(
-      tasksQuery,
+    const tasksRef = ref(rtdb, `tasks/${userId}`);
+    const unsubscribe = onValue(
+      tasksRef,
       (snapshot) => {
-        const nextTasks: Task[] = snapshot.docs.map((item) => {
-          const data = item.data() as Omit<Task, "id">;
-          return {
-            id: item.id,
-            ...data,
-          };
-        });
+        if (!snapshot.exists()) {
+          setTasks([]);
+          setLoading(false);
+          return;
+        }
+
+        const value = snapshot.val() as Record<string, Omit<Task, "id">>;
+        const nextTasks: Task[] = Object.entries(value).map(([id, data]) => ({
+          id,
+          ...data,
+        }));
 
         setTasks(nextTasks);
         setLoading(false);
       },
-      (snapshotError) => {
+      (onValueError) => {
         const message =
-          snapshotError instanceof Error
-            ? snapshotError.message
-            : "Failed to load tasks.";
-
+          onValueError instanceof Error
+            ? onValueError.message
+            : "Unable to load tasks.";
         setError(message);
         setTasks([]);
         setLoading(false);
       },
     );
 
-    return unsubscribe;
+    return () => unsubscribe();
   }, [userId]);
 
   const addTask = useCallback(
@@ -74,13 +66,14 @@ export const useFirebaseTasks = (userId?: string) => {
         throw new Error("No authenticated user.");
       }
 
-      await addDoc(collection(db, TASKS_COLLECTION), {
-        title: payload.title,
-        description: payload.description,
-        completed: payload.completed ?? false,
+      const tasksRef = ref(rtdb, `tasks/${userId}`);
+      const newTaskRef = push(tasksRef);
+
+      await set(newTaskRef, {
         userId,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
+        title: payload.title.trim(),
+        description: payload.description.trim(),
+        completed: payload.completed ?? false,
       });
     },
     [userId],
@@ -88,36 +81,48 @@ export const useFirebaseTasks = (userId?: string) => {
 
   const updateTask = useCallback(
     async (taskId: string, payload: Partial<TaskPayload>) => {
-      const taskRef = doc(db, TASKS_COLLECTION, taskId);
-      await updateDoc(taskRef, {
-        ...payload,
-        updatedAt: serverTimestamp(),
-      });
+      if (!userId) {
+        throw new Error("No authenticated user.");
+      }
+
+      const taskRef = ref(rtdb, `tasks/${userId}/${taskId}`);
+      await update(taskRef, payload);
     },
-    [],
+    [userId],
   );
 
-  const deleteTask = useCallback(async (taskId: string) => {
-    const taskRef = doc(db, TASKS_COLLECTION, taskId);
-    await deleteDoc(taskRef);
-  }, []);
+  const deleteTask = useCallback(
+    async (taskId: string) => {
+      if (!userId) {
+        throw new Error("No authenticated user.");
+      }
+
+      const taskRef = ref(rtdb, `tasks/${userId}/${taskId}`);
+      await remove(taskRef);
+    },
+    [userId],
+  );
 
   const getTaskById = useCallback(
     async (taskId: string) => {
-      const taskRef = doc(db, TASKS_COLLECTION, taskId);
-      const snapshot = await getDoc(taskRef);
+      if (!userId) {
+        return null;
+      }
+
+      const taskRef = ref(rtdb, `tasks/${userId}/${taskId}`);
+      const snapshot = await get(taskRef);
 
       if (!snapshot.exists()) {
         return null;
       }
 
-      const data = snapshot.data() as Omit<Task, "id">;
-      if (!userId || data.userId !== userId) {
+      const data = snapshot.val() as Omit<Task, "id">;
+      if (data.userId !== userId) {
         return null;
       }
 
       return {
-        id: snapshot.id,
+        id: taskId,
         ...data,
       } as Task;
     },

@@ -1,5 +1,5 @@
 {
-  "name": "task-manager",
+  "name": "task-contacts-dexie",
   "integrations": {
     "capacitor": {}
   },

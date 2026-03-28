@@ -36,7 +36,7 @@ const LoginPage: React.FC = () => {
     try {
       setIsSubmitting(true);
       await login(email, password);
-      history.replace("/tasks");
+      history.replace("/dashboard");
     } catch (loginError) {
       const message =
         loginError instanceof Error ? loginError.message : "Unable to login.";

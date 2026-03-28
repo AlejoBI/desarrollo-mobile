@@ -23,7 +23,9 @@ export const TasksProvider: React.FC<TasksProviderProps> = ({ children }) => {
   const { user } = useAuth();
   const tasks = useFirebaseTasks(user?.uid);
 
-  return <TasksContext.Provider value={tasks}>{children}</TasksContext.Provider>;
+  return (
+    <TasksContext.Provider value={tasks}>{children}</TasksContext.Provider>
+  );
 };
 
 export const useTasks = () => {
