@@ -1,0 +1,25 @@
+.sensor-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.sensor-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.sensor-pre {
+  background: var(--ion-color-light);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 12px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.sensor-value {
+  font-weight: 600;
+}

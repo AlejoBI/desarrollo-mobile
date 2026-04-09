@@ -1,0 +1,14 @@
+.home-content {
+  --background: linear-gradient(180deg, #f7fbff 0%, #ffffff 100%);
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.home-sensor-button {
+  height: 48px;
+}
