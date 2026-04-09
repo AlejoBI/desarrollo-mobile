@@ -12,10 +12,11 @@ export const useGeolocation = () => {
   const ensurePermissions = useCallback(async () => {
     let permissions = await Geolocation.checkPermissions();
 
-    if (
-      permissions.location === "prompt" ||
-      permissions.coarseLocation === "prompt"
-    ) {
+    const needsPermissionRequest =
+      permissions.location !== "granted" ||
+      permissions.coarseLocation !== "granted";
+
+    if (needsPermissionRequest) {
       permissions = await Geolocation.requestPermissions();
     }
 
@@ -23,8 +24,12 @@ export const useGeolocation = () => {
     const coarseGranted = permissions.coarseLocation === "granted";
 
     if (!locationGranted && !coarseGranted) {
-      throw new Error("Permiso de geolocalizacion denegado.");
+      throw new Error(
+        "Permiso de geolocalizacion denegado. Habilitalo en ajustes de la app.",
+      );
     }
+
+    return permissions;
   }, []);
 
   const getCurrentLocation = useCallback(async () => {
@@ -32,10 +37,11 @@ export const useGeolocation = () => {
     setError(null);
 
     try {
-      await ensurePermissions();
+      const permissions = await ensurePermissions();
+      const enableHighAccuracy = permissions.location === "granted";
 
       const position = await Geolocation.getCurrentPosition({
-        enableHighAccuracy: true,
+        enableHighAccuracy,
         timeout: 10000,
         maximumAge: 0,
       });
@@ -62,11 +68,12 @@ export const useGeolocation = () => {
         return;
       }
 
-      await ensurePermissions();
+      const permissions = await ensurePermissions();
+      const enableHighAccuracy = permissions.location === "granted";
 
       const id = await Geolocation.watchPosition(
         {
-          enableHighAccuracy: true,
+          enableHighAccuracy,
           timeout: 10000,
           maximumAge: 0,
         },

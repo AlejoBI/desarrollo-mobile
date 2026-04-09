@@ -12,6 +12,10 @@ type PushPermission = Awaited<
   ReturnType<typeof PushNotifications.requestPermissions>
 >;
 
+const isPushEnabledByEnv =
+  String(import.meta.env.VITE_ENABLE_PUSH_NOTIFICATIONS ?? "false") ===
+  "true";
+
 export const usePushNotifications = () => {
   const [permission, setPermission] = useState<PushPermission | null>(null);
   const [token, setToken] = useState<string | null>(null);
@@ -55,6 +59,12 @@ export const usePushNotifications = () => {
     setError(null);
 
     try {
+      if (!isPushEnabledByEnv) {
+        throw new Error(
+          "Push deshabilitado. Agrega google-services.json y define VITE_ENABLE_PUSH_NOTIFICATIONS=true para habilitar registro.",
+        );
+      }
+
       const permissionResult = await requestPermission();
 
       if (!permissionResult || permissionResult.receive !== "granted") {

@@ -3,6 +3,13 @@ import { LocalNotifications } from "@capacitor/local-notifications";
 import type { PluginListenerHandle } from "@capacitor/core";
 import { getErrorMessage } from "./utils";
 
+const MAX_ANDROID_NOTIFICATION_ID = 2_147_483_647;
+
+const createNotificationId = (): number => {
+  const generatedId = Math.floor(Date.now() % MAX_ANDROID_NOTIFICATION_ID);
+  return generatedId > 0 ? generatedId : 1;
+};
+
 type PermissionState = Awaited<
   ReturnType<typeof LocalNotifications.checkPermissions>
 >;
@@ -52,7 +59,7 @@ export const useLocalNotifications = () => {
       title: string,
       body: string,
       delayInSeconds = 2,
-      id = Date.now(),
+      id?: number,
     ) => {
       setError(null);
 
@@ -63,21 +70,34 @@ export const useLocalNotifications = () => {
           return null;
         }
 
+        const safeId =
+          typeof id === "number" &&
+          Number.isInteger(id) &&
+          id > 0 &&
+          id <= MAX_ANDROID_NOTIFICATION_ID
+            ? id
+            : createNotificationId();
+
+        const safeDelayInSeconds =
+          Number.isFinite(delayInSeconds) && delayInSeconds > 0
+            ? delayInSeconds
+            : 2;
+
         await LocalNotifications.schedule({
           notifications: [
             {
-              id,
+              id: safeId,
               title,
               body,
               schedule: {
-                at: new Date(Date.now() + delayInSeconds * 1000),
+                at: new Date(Date.now() + safeDelayInSeconds * 1000),
                 allowWhileIdle: true,
               },
             },
           ],
         });
 
-        return id;
+        return safeId;
       } catch (hookError: unknown) {
         setError(
           getErrorMessage(

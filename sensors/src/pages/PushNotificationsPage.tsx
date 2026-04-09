@@ -11,6 +11,10 @@ import { usePushNotifications } from "../hooks";
 import "./SensorPage.css";
 
 const PushNotificationsPage: React.FC = () => {
+  const pushEnabled =
+    String(import.meta.env.VITE_ENABLE_PUSH_NOTIFICATIONS ?? "false") ===
+    "true";
+
   const {
     permission,
     token,
@@ -35,6 +39,7 @@ const PushNotificationsPage: React.FC = () => {
             <IonButton
               expand="block"
               color="success"
+              disabled={!pushEnabled}
               onClick={() => void register()}
             >
               Registrar dispositivo
@@ -51,12 +56,22 @@ const PushNotificationsPage: React.FC = () => {
             Token FCM/APNS: <span className="sensor-value">{token ?? "-"}</span>
           </p>
 
-          <IonText color="medium">
-            <p>
-              Para entorno real, conecta este token con Firebase Cloud Messaging
-              en Android/iOS y tu backend de notificaciones.
-            </p>
-          </IonText>
+          {!pushEnabled ? (
+            <IonText color="warning">
+              <p>
+                Push esta deshabilitado en este build.
+                Define VITE_ENABLE_PUSH_NOTIFICATIONS=true y agrega
+                google-services.json para habilitar registro.
+              </p>
+            </IonText>
+          ) : (
+            <IonText color="medium">
+              <p>
+                Para entorno real, conecta este token con Firebase Cloud
+                Messaging en Android/iOS y tu backend de notificaciones.
+              </p>
+            </IonText>
+          )}
 
           {error ? (
             <IonText color="danger">
