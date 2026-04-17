@@ -13,19 +13,23 @@ import { APP_ROUTES } from "../constants/routes";
 interface SensorPageLayoutProps {
   title: string;
   children: ReactNode;
+  showBackButton?: boolean;
 }
 
 const SensorPageLayout: React.FC<SensorPageLayoutProps> = ({
   title,
   children,
+  showBackButton = true,
 }) => {
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot="start">
-            <IonBackButton defaultHref={APP_ROUTES.HOME} />
-          </IonButtons>
+          {showBackButton ? (
+            <IonButtons slot="start">
+              <IonBackButton defaultHref={APP_ROUTES.HOME} />
+            </IonButtons>
+          ) : null}
           <IonTitle>{title}</IonTitle>
         </IonToolbar>
       </IonHeader>

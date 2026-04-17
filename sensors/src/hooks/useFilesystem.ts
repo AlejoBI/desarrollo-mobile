@@ -4,6 +4,16 @@ import { getErrorMessage } from "./utils";
 
 const DEFAULT_FILE_NAME = "sensor-note.txt";
 
+const isMissingFileMessage = (message: string): boolean => {
+  const normalized = message.toLowerCase();
+  return (
+    normalized.includes("does not exist") ||
+    normalized.includes("not found") ||
+    normalized.includes("no such file") ||
+    normalized.includes("no existe")
+  );
+};
+
 export const useFilesystem = () => {
   const [fileName, setFileName] = useState(DEFAULT_FILE_NAME);
   const [content, setContent] = useState("");
@@ -80,6 +90,14 @@ export const useFilesystem = () => {
           hookError,
           "No fue posible leer el archivo.",
         );
+
+        if (isMissingFileMessage(message)) {
+          setFileName(targetFileName);
+          setContent("");
+          setFileUri(null);
+          return null;
+        }
+
         setError(message);
         return null;
       } finally {

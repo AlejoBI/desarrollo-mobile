@@ -1,0 +1,57 @@
+.tracking-actions {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.tracking-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tracking-segment {
+  margin-bottom: 16px;
+  overflow-x: auto;
+}
+
+.tracking-segment ion-segment-button {
+  min-width: 110px;
+}
+
+.tracking-map-image {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.tracking-map-iframe {
+  width: 100%;
+  height: 280px;
+  border: 0;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.tracking-history-day {
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.tracking-history-item {
+  border: 1px solid var(--ion-color-light-shade);
+  border-radius: 10px;
+  padding: 10px;
+  background: var(--ion-color-light);
+}
+
+.tracking-history-item p {
+  margin: 0 0 6px;
+  font-size: 13px;
+}
+
+.tracking-history-item p:last-child {
+  margin-bottom: 0;
+}

@@ -1,13 +1,19 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Geolocation, Position } from "@capacitor/geolocation";
 import { getErrorMessage } from "./utils";
 
-export const useGeolocation = () => {
+interface UseGeolocationOptions {
+  minimumUpdateIntervalMs?: number;
+}
+
+export const useGeolocation = (options: UseGeolocationOptions = {}) => {
+  const minimumUpdateIntervalMs = options.minimumUpdateIntervalMs ?? 3_000;
   const [currentPosition, setCurrentPosition] = useState<Position | null>(null);
   const [isWatching, setIsWatching] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [watchId, setWatchId] = useState<string | null>(null);
+  const isStartingRef = useRef(false);
 
   const ensurePermissions = useCallback(async () => {
     let permissions = await Geolocation.checkPermissions();
@@ -42,8 +48,8 @@ export const useGeolocation = () => {
 
       const position = await Geolocation.getCurrentPosition({
         enableHighAccuracy,
-        timeout: 10000,
-        maximumAge: 0,
+        timeout: 15_000,
+        maximumAge: 3_000,
       });
 
       setCurrentPosition(position);
@@ -63,20 +69,24 @@ export const useGeolocation = () => {
   const startWatching = useCallback(async () => {
     setError(null);
 
-    try {
-      if (watchId) {
-        return;
-      }
+    if (watchId || isStartingRef.current) {
+      return Boolean(watchId);
+    }
 
+    isStartingRef.current = true;
+
+    try {
       const permissions = await ensurePermissions();
       const enableHighAccuracy = permissions.location === "granted";
+      const watchOptions = {
+        enableHighAccuracy,
+        timeout: 15_000,
+        maximumAge: 3_000,
+        minimumUpdateInterval: minimumUpdateIntervalMs,
+      } as Parameters<typeof Geolocation.watchPosition>[0];
 
       const id = await Geolocation.watchPosition(
-        {
-          enableHighAccuracy,
-          timeout: 10000,
-          maximumAge: 0,
-        },
+        watchOptions,
         (position, watchError) => {
           if (watchError) {
             setError(
@@ -96,6 +106,7 @@ export const useGeolocation = () => {
 
       setWatchId(id);
       setIsWatching(true);
+      return true;
     } catch (hookError: unknown) {
       setError(
         getErrorMessage(
@@ -103,8 +114,11 @@ export const useGeolocation = () => {
           "No fue posible iniciar el seguimiento de ubicacion.",
         ),
       );
+      return false;
+    } finally {
+      isStartingRef.current = false;
     }
-  }, [ensurePermissions, watchId]);
+  }, [ensurePermissions, minimumUpdateIntervalMs, watchId]);
 
   const stopWatching = useCallback(async () => {
     if (!watchId) {

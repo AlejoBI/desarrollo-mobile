@@ -55,12 +55,7 @@ export const useLocalNotifications = () => {
   }, []);
 
   const schedule = useCallback(
-    async (
-      title: string,
-      body: string,
-      delayInSeconds = 2,
-      id?: number,
-    ) => {
+    async (title: string, body: string, delayInSeconds = 2, id?: number) => {
       setError(null);
 
       try {

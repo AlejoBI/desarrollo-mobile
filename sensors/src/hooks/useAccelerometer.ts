@@ -9,29 +9,26 @@ type AccelerationState = {
   z: number;
 };
 
-type OrientationState = {
-  alpha: number;
-  beta: number;
-  gamma: number;
+type UseAccelerometerOptions = {
+  sampleIntervalMs?: number;
 };
 
-export const useAccelerometer = () => {
+export const useAccelerometer = (options: UseAccelerometerOptions = {}) => {
+  const sampleIntervalMs = options.sampleIntervalMs ?? 250;
   const [acceleration, setAcceleration] = useState<AccelerationState | null>(
     null,
   );
-  const [orientation, setOrientation] = useState<OrientationState | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const accelListenerRef = useRef<PluginListenerHandle | null>(null);
-  const orientationListenerRef = useRef<PluginListenerHandle | null>(null);
+  const lastSampleAtRef = useRef(0);
 
   const stop = useCallback(async () => {
     await accelListenerRef.current?.remove();
-    await orientationListenerRef.current?.remove();
 
     accelListenerRef.current = null;
-    orientationListenerRef.current = null;
+    lastSampleAtRef.current = 0;
     setIsListening(false);
   }, []);
 
@@ -45,10 +42,17 @@ export const useAccelerometer = () => {
     try {
       accelListenerRef.current = await Motion.addListener("accel", (event) => {
         const nextAcceleration = event.acceleration;
+        const now = Date.now();
 
         if (!nextAcceleration) {
           return;
         }
+
+        if (now - lastSampleAtRef.current < sampleIntervalMs) {
+          return;
+        }
+
+        lastSampleAtRef.current = now;
 
         setAcceleration({
           x: nextAcceleration.x ?? 0,
@@ -56,17 +60,6 @@ export const useAccelerometer = () => {
           z: nextAcceleration.z ?? 0,
         });
       });
-
-      orientationListenerRef.current = await Motion.addListener(
-        "orientation",
-        (event) => {
-          setOrientation({
-            alpha: event.alpha ?? 0,
-            beta: event.beta ?? 0,
-            gamma: event.gamma ?? 0,
-          });
-        },
-      );
 
       setIsListening(true);
     } catch (hookError: unknown) {
@@ -78,7 +71,7 @@ export const useAccelerometer = () => {
       );
       await stop();
     }
-  }, [isListening, stop]);
+  }, [isListening, sampleIntervalMs, stop]);
 
   useEffect(() => {
     return () => {
@@ -88,7 +81,6 @@ export const useAccelerometer = () => {
 
   return {
     acceleration,
-    orientation,
     isListening,
     error,
     start,

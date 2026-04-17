@@ -124,6 +124,36 @@ $env:JAVA_HOME="C:\Program Files\Android\Android Studio\jbr"
 $env:Path="$env:JAVA_HOME\bin;$env:Path"
 ```
 
+Verifica que quedo activo Java 21 antes de compilar:
+
+```powershell
+java -version
+```
+
+Debe mostrar version 21.x.
+
+### Error comun: Unsupported class file major version 69
+
+Si ves este error al ejecutar `assembleDebug`, significa que Gradle se ejecuto con Java 25.
+
+Solucion rapida (PowerShell, terminal actual):
+
+```powershell
+$env:JAVA_HOME="C:\Program Files\Android\Android Studio\jbr"
+$env:Path="$env:JAVA_HOME\bin;$env:Path"
+java -version
+```
+
+Luego vuelve a correr:
+
+```powershell
+npm run build
+npx cap sync android
+.\android\gradlew.bat -p android assembleDebug
+```
+
+Nota: cuando abres una terminal nueva, debes volver a definir `JAVA_HOME` (o configurarlo de forma permanente en variables de entorno del sistema).
+
 Ahora genera el APK:
 
 ```powershell

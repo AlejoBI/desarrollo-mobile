@@ -7,7 +7,12 @@ type DeviceBatteryState = Awaited<ReturnType<typeof Device.getBatteryInfo>>;
 type DeviceLanguageState = Awaited<ReturnType<typeof Device.getLanguageCode>>;
 type DeviceIdState = Awaited<ReturnType<typeof Device.getId>>;
 
-export const useDevice = () => {
+type UseDeviceOptions = {
+  autoLoad?: boolean;
+};
+
+export const useDevice = (options: UseDeviceOptions = {}) => {
+  const autoLoad = options.autoLoad ?? true;
   const [deviceInfo, setDeviceInfo] = useState<DeviceInfoState | null>(null);
   const [batteryInfo, setBatteryInfo] = useState<DeviceBatteryState | null>(
     null,
@@ -47,9 +52,29 @@ export const useDevice = () => {
     }
   }, []);
 
+  const loadBatteryData = useCallback(async () => {
+    setError(null);
+
+    try {
+      const battery = await Device.getBatteryInfo();
+      setBatteryInfo(battery);
+    } catch (hookError: unknown) {
+      setError(
+        getErrorMessage(
+          hookError,
+          "No fue posible obtener la bateria del dispositivo.",
+        ),
+      );
+    }
+  }, []);
+
   useEffect(() => {
+    if (!autoLoad) {
+      return;
+    }
+
     void loadDeviceData();
-  }, [loadDeviceData]);
+  }, [autoLoad, loadDeviceData]);
 
   return {
     deviceInfo,
@@ -59,5 +84,6 @@ export const useDevice = () => {
     loading,
     error,
     reload: loadDeviceData,
+    reloadBattery: loadBatteryData,
   };
 };

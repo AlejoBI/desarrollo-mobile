@@ -1,11 +1,9 @@
 export const APP_ROUTES = {
   HOME: "/home",
-  GEOLOCATION: "/geolocation",
-  CAMERA: "/camera",
-  MOTION: "/motion",
-  DEVICE: "/device",
-  HAPTICS: "/haptics",
-  FILESYSTEM: "/filesystem",
-  LOCAL_NOTIFICATIONS: "/local-notifications",
-  PUSH_NOTIFICATIONS: "/push-notifications",
+  TRACKING: "/tracking",
+  TRACKING_STATUS: "/tracking/status",
+  TRACKING_LOCATION: "/tracking/location",
+  TRACKING_MAP: "/tracking/map",
+  TRACKING_PHOTO: "/tracking/photo",
+  TRACKING_HISTORY: "/tracking/history",
 } as const;
