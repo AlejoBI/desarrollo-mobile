@@ -81,3 +81,101 @@ ionic cap open android
 ```
 
 ---
+
+## Instalar APK en teléfono físico (Windows)
+
+Esta guía aplica para el proyecto de ejemplo en `sensors`.
+
+### 1. Preparar el teléfono
+
+1. Activa **Opciones de desarrollador** en Android.
+2. Activa **Depuración USB**.
+3. Conecta el teléfono por USB y acepta la huella RSA cuando aparezca.
+
+### 2. Verificar ADB
+
+Si `adb` está en `C:\Users\Gamer\Downloads\platform-tools`, ejecuta:
+
+```powershell
+& "C:\Users\Gamer\Downloads\platform-tools\adb.exe" devices
+```
+
+En **CMD** (símbolo del sistema), usa este formato (sin `&`):
+
+```cmd
+"C:\Users\Gamer\Downloads\platform-tools\adb.exe" devices
+```
+
+Debes ver tu equipo con estado `device`.
+
+### 3. Generar APK debug
+
+Desde la carpeta `sensors`, ejecuta en este orden:
+
+```powershell
+npm run build
+npx cap sync android
+```
+
+Si Gradle marca error de Java, usa Java 21 del JBR de Android Studio en la sesión actual:
+
+```powershell
+$env:JAVA_HOME="C:\Program Files\Android\Android Studio\jbr"
+$env:Path="$env:JAVA_HOME\bin;$env:Path"
+```
+
+Verifica que quedo activo Java 21 antes de compilar:
+
+```powershell
+java -version
+```
+
+Debe mostrar version 21.x.
+
+### Error comun: Unsupported class file major version 69
+
+Si ves este error al ejecutar `assembleDebug`, significa que Gradle se ejecuto con Java 25.
+
+Solucion rapida (PowerShell, terminal actual):
+
+```powershell
+$env:JAVA_HOME="C:\Program Files\Android\Android Studio\jbr"
+$env:Path="$env:JAVA_HOME\bin;$env:Path"
+java -version
+```
+
+Luego vuelve a correr:
+
+```powershell
+npm run build
+npx cap sync android
+.\android\gradlew.bat -p android assembleDebug
+```
+
+Nota: cuando abres una terminal nueva, debes volver a definir `JAVA_HOME` (o configurarlo de forma permanente en variables de entorno del sistema).
+
+Ahora genera el APK:
+
+```powershell
+.\android\gradlew.bat -p android assembleDebug
+```
+
+APK generado en:
+
+`sensors\android\app\build\outputs\apk\debug\app-debug.apk`
+
+### 4. Instalar APK en el teléfono
+
+```powershell
+& "C:\Users\Gamer\Downloads\platform-tools\adb.exe" install -r "C:\Users\Gamer\OneDrive\Desktop\Repositories\desarrollo-mobile\sensors\android\app\build\outputs\apk\debug\app-debug.apk"
+```
+
+En **CMD** (símbolo del sistema), usa este formato (sin `&`):
+
+```cmd
+"C:\Users\Gamer\Downloads\platform-tools\adb.exe" install -r "C:\Users\Gamer\OneDrive\Desktop\Repositories\desarrollo-mobile\sensors\android\app\build\outputs\apk\debug\app-debug.apk"
+```
+
+Si termina con `Success`, la app quedó instalada.
+
+---
